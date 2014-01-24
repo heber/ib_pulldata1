@@ -38,6 +38,8 @@ public class Main {
 			dates=new ArrayList<String>();
 			dates.add("20140124 10:30:00 EST");	
 		}
+		
+		int clientId=5;
 		//These symbols are the Nasdaq 100 companies
 		/*
 		String [] symbols={"AAPL", "ADBE", "ADI", "ADP", "ADSK", "AKAM", "ALTR", "ALXN", "AMAT", "AMGN", "AMZN", "ATVI", "AVGO", "BBBY", "BIDU", 

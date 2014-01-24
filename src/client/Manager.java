@@ -30,7 +30,7 @@ public class Manager {
 	
 	public void requestData(){
 		
-		client.s_connect("", 4002, 0);
+		client.s_connect("", 4002, 5);
 		
 		while (!requests.isEmpty()){
 			try{
