@@ -5,7 +5,7 @@ public class Tuple {
 	private String date;
 	private String symbol;
 	
-	public Tuple (String date, String symbol){
+	public Tuple (String symbol, String date){
 		this.date=date;
 		this.symbol=symbol;
 		

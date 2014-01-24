@@ -84,7 +84,6 @@ public class Client implements EWrapper{
     	contract.m_currency="USD";
     	contract.m_symbol=symbol;
     	contract.m_secType="STK";
-    	System.out.println(endDateTime);
     	m_client.reqHistoricalData(reqId, contract, endDateTime, durationStr, barSizeSetting, whatToShow, 0, 2);
     	
     }
