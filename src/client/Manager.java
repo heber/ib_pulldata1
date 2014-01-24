@@ -52,9 +52,11 @@ public class Manager {
 	public void requestReceived(int requestId){
 		
 		//This is interesting here. I don't know how this would work with multithreading.
+		
 		if (reqId_Request.containsKey(requestId)){
 			Tuple request=reqId_Request.get(requestId);
 			requests.remove(request);
+			System.out.println("I got here");
 		}
 	}
 	

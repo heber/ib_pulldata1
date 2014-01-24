@@ -106,6 +106,7 @@ public class Main {
 		}
 		
 		manager.requestData();
+		output.flush();
 	}
 
 	private static List<String> readSymbols(String filePath){
@@ -115,4 +116,5 @@ public class Main {
 	private static List<String> readDates(String filePath){
 		return null;
 	}
+	
 }
