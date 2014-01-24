@@ -13,7 +13,6 @@ public class Client implements EWrapper{
 	public boolean  m_bIsFAAccount = false;
 	public String   m_FAAcctCodes;
 	private Output output;
-	private Map<Integer, Tuple> id_Tuple=new HashMap<Integer, Tuple>();
 	Manager manager;
 	
     private static final int NOT_AN_FA_ACCOUNT_ERROR = 321 ;
@@ -23,6 +22,9 @@ public class Client implements EWrapper{
     String faGroupXML ;
     String faProfilesXML ;
     String faAliasesXML ;
+
+	private int s_requestCounter;
+	private Map<Integer, Integer> requestMap=new HashMap<Integer, Integer>();
 
     public Client(Output output, Manager manager){
     	this.output=output;
@@ -84,8 +86,10 @@ public class Client implements EWrapper{
     	contract.m_currency="USD";
     	contract.m_symbol=symbol;
     	contract.m_secType="STK";
-    	m_client.reqHistoricalData(reqId, contract, endDateTime, durationStr, barSizeSetting, whatToShow, 0, 2);
-    	
+    	    	
+    	m_client.reqHistoricalData(s_requestCounter, contract, endDateTime, durationStr, barSizeSetting, whatToShow, 0, 2);
+    	requestMap.put(s_requestCounter, reqId);
+    	s_requestCounter++;
     }
     
     public void s_sellMarketOrder(int reqId, String symbol, int numberOfShares){
@@ -292,9 +296,7 @@ public class Client implements EWrapper{
 		String msg = EWrapperMsgGenerator.nextValidId( orderId);
 		
 		printMessage(msg);
-		
-		// TODO add some logic here.
-		
+		s_requestCounter=orderId;
 	}
 
 	@Override
@@ -392,7 +394,8 @@ public class Client implements EWrapper{
 			double high, double low, double close, int volume, int count,
 			double WAP, boolean hasGaps) {
 		
-		manager.requestReceived(reqId);
+		
+		manager.requestReceived(requestMap.get(reqId));
 		output.update(reqId, date, open, high, low, close, volume, count, WAP, hasGaps);		
 		
 	}
@@ -504,5 +507,11 @@ public class Client implements EWrapper{
 	private void printMessage(String msg){
 		System.out.println(msg);
 	}
+	
+	/**
+	 * Receives from the server the next valid order id that can be used
+	 * @param orderId
+	 */
+
 	
 }
