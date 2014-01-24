@@ -1,5 +1,8 @@
 package client;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.ib.client.*;
 
 public class Client implements EWrapper{
@@ -10,6 +13,8 @@ public class Client implements EWrapper{
 	public boolean  m_bIsFAAccount = false;
 	public String   m_FAAcctCodes;
 	private Output output;
+	private Map<Integer, Tuple> id_Tuple=new HashMap<Integer, Tuple>();
+	Manager manager;
 	
     private static final int NOT_AN_FA_ACCOUNT_ERROR = 321 ;
     private int faErrorCodes[] = { 503, 504, 505, 522, 1100, NOT_AN_FA_ACCOUNT_ERROR } ;
@@ -19,11 +24,9 @@ public class Client implements EWrapper{
     String faProfilesXML ;
     String faAliasesXML ;
 
-    
-	
-    public Client(Output output){
+    public Client(Output output, Manager manager){
     	this.output=output;
-    	
+    	this.manager=manager;
     }
     
     public boolean isConnected(){
@@ -75,7 +78,7 @@ public class Client implements EWrapper{
     	 
     }
     
-    public void s_getHistoricalData(int reqId, String symbol, String endDateTime, String durationStr, String barSizeSetting, String whatToShow){
+        public void s_getHistoricalData(int reqId, String symbol, String endDateTime, String durationStr, String barSizeSetting, String whatToShow){
     	Contract contract=new Contract();
     	contract.m_exchange="SMART";
     	contract.m_currency="USD";
@@ -389,9 +392,8 @@ public class Client implements EWrapper{
 			double high, double low, double close, int volume, int count,
 			double WAP, boolean hasGaps) {
 		
-		output.update(reqId, date, open, high, low, close, volume, count, WAP, hasGaps);
-		//String msg=EWrapperMsgGenerator.historicalData(reqId, date, open, high, low, close, volume, count, WAP, hasGaps);
-		
+		manager.requestReceived(reqId);
+		output.update(reqId, date, open, high, low, close, volume, count, WAP, hasGaps);		
 		
 	}
 

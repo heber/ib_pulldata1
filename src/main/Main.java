@@ -1,8 +1,11 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import client.Client;
+import client.Manager;
 import client.Output;
 
 
@@ -15,14 +18,41 @@ public class Main {
 		
 		Map<String, Integer> stock_Id=new HashMap<String, Integer>();
 		Map<Integer, String> id_Stock=new HashMap<Integer, String>();
+		
+		List<String> symbols;
+		List<String> dates;
+		
+		if (args.length>0){
+			symbols=readSymbols(args[0]);
+		}
+		else {
+			symbols=new ArrayList<String>();
+			symbols.add("AAPL");
+			symbols.add("MU");
+		}
+		
+		if (args.length>1){
+			dates=readDates(args[1]);
+		}
+		else{
+			dates=new ArrayList<String>();
+			dates.add("20140124 10:30:00 EST");	
+		}
 		//These symbols are the Nasdaq 100 companies
+		/*
 		String [] symbols={"AAPL", "ADBE", "ADI", "ADP", "ADSK", "AKAM", "ALTR", "ALXN", "AMAT", "AMGN", "AMZN", "ATVI", "AVGO", "BBBY", "BIDU", 
 				"BIIB", "BRCM", "CA", "CELG", "CERN", "CHKP", "CHRW", "CHTR", "CMCSA", "COST", "CSCO", "CTRX", "CTSH", "CTXS", "DISCA", "DLTR", "DTV", "EBAY",
 				"EQIX", "ESRX", "EXPD", "EXPE", "FAST", "FB", "FFIV", "FISV", "FOSL", "FOXA", "GILD", "GMCR", "GOOG", "GRMN", "HSIC", "INTC", "INTU", "ISRG", 
 				"KLAC", "KRFT", "LBTYA", "LINTA", "LLTC", "LMCA", "MAR", "MAT", "MCHP", "MDLZ", "MNST", "MSFT", "MU", "MXIM", "MYL", "NFLX", "NTAP", "NUAN",
 				"NVDA", "ORLY", "PAYX", "PCAR", "PCLN", "QCOM", "REGN", "ROST", "SBAC", "SBUX", "SHLD", "SIAL", "SIRI", "SNDK", "SPLS", "SRCL", "STX", "SYMC",
 				"TSLA", "TXN", "VIAB", "VIP", "VOD", "VRSK", "VRTX", "WDC", "WFM", "WYNN", "XLNX", "XRAY", "YHOO"};
+		*/
 		
+		
+		
+		
+		//Dates from where I will extract the info.
+		/*
 		String [] dates={
 				
 				"20130930 16:00:00 EST", "20130930 14:00:00 EST", "20130930 12:00:00 EST", "20130930 10:00:00 EST",
@@ -49,7 +79,11 @@ public class Main {
 				
 								
 		};
-
+		 */
+		
+		
+		
+		
 		int count=1;
 		for (String stock : symbols){
 			
@@ -59,36 +93,24 @@ public class Main {
 		}
 		
 		Output output=new Output(id_Stock);
-		Client client=new Client(output);
-		client.s_connect("", 4001, 0);
+		Manager manager=new Manager(output);
 				
-		
 		for (String symbol : symbols){
 			for (String date : dates){
 				
-				try{
-					Thread.sleep(10001);
-					client.s_getHistoricalData(stock_Id.get(symbol), symbol, date, "7200 S", "5 secs", "TRADES");
-				}
-				catch(InterruptedException ex){
-					//Do nothing and keep working on your loop
-				}
+				manager.addRequest(symbol, date);
 				
 			}
 		}
 		
-		try{
-			Thread.sleep(10001);
-			
-		}
-		catch(InterruptedException e){
-			//do nothing here
-		}
-		
-		output.flush();
-		client.s_disconnect();
+		manager.requestData();
 	}
 
+	private static List<String> readSymbols(String filePath){
+		return null;
+	}
+	
+	private static List<String> readDates(String filePath){
+		return null;
+	}
 }
-
-
