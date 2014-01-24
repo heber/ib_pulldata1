@@ -395,9 +395,10 @@ public class Client implements EWrapper{
 			double high, double low, double close, int volume, int count,
 			double WAP, boolean hasGaps) {
 		
-		
+		System.out.println("Request received"+Integer.toString(reqId));
 		manager.requestReceived(requestMap.get(reqId));
-		output.update(reqId, date, open, high, low, close, volume, count, WAP, hasGaps);		
+		output.update(reqId, date, open, high, low, close, volume, count, WAP, hasGaps);
+		
 		
 	}
 
