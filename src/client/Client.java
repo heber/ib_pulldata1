@@ -80,15 +80,16 @@ public class Client implements EWrapper{
     	 
     }
     
-        public void s_getHistoricalData(int reqId, String symbol, String endDateTime, String durationStr, String barSizeSetting, String whatToShow){
+    public void s_getHistoricalData(int reqId, String symbol, String endDateTime, String durationStr, String barSizeSetting, String whatToShow){
     	Contract contract=new Contract();
     	contract.m_exchange="SMART";
     	contract.m_currency="USD";
     	contract.m_symbol=symbol;
     	contract.m_secType="STK";
-    	    	
-    	m_client.reqHistoricalData(s_requestCounter, contract, endDateTime, durationStr, barSizeSetting, whatToShow, 0, 2);
+    	
     	requestMap.put(s_requestCounter, reqId);
+    	System.out.println("Placed order "+Integer.toString(s_requestCounter)+symbol);
+    	m_client.reqHistoricalData(s_requestCounter, contract, endDateTime, durationStr, barSizeSetting, whatToShow, 0, 2);
     	s_requestCounter++;
     }
     
