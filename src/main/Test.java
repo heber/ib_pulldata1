@@ -2,74 +2,25 @@ package main;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
-import client.Client;
-import client.Manager;
-import client.Output;
-
-
-public class Main {
+public class Test {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		
-		if (args.length!=2){
-			System.out.println("Usage: ib_pulldata.jar <startDate> <endDate>");
-			return;
-		}
+		String date1="01/01/2014";
+		String date2="02/04/2014";
 		
-		String startDate=args[0];
-		String endDate=args[1];
-		
-		System.out.println("Generating date range");
-		
-		List<String> dates=dateRange(startDate, endDate);
-		
-		Map<String, Integer> stock_Id=new HashMap<String, Integer>();
-		Map<Integer, String> id_Stock=new HashMap<Integer, String>();
-		
-		
-		int clientId=5;
-		String [] symbols={"AAPL", "ADBE", "ADI", "ADP", "ADSK", "AKAM", "ALTR", "ALXN", "AMAT", "AMGN", "AMZN", "ATVI", "AVGO", "BBBY", "BIDU", 
-				"BIIB", "BRCM", "CA", "CELG", "CERN", "CHKP", "CHRW", "CHTR", "CMCSA", "COST", "CSCO", "CTRX", "CTSH", "CTXS", "DISCA", "DLTR", "DTV", "EBAY",
-				"EQIX", "ESRX", "EXPD", "EXPE", "FAST", "FB", "FFIV", "FISV", "FOSL", "FOXA", "GILD", "GMCR", "GOOG", "GRMN", "HSIC", "INTC", "INTU", "ISRG", 
-				"KLAC", "KRFT", "LBTYA", "LINTA", "LLTC", "LMCA", "MAR", "MAT", "MCHP", "MDLZ", "MNST", "MSFT", "MU", "MXIM", "MYL", "NFLX", "NTAP", "NUAN",
-				"NVDA", "ORLY", "PAYX", "PCAR", "PCLN", "QCOM", "REGN", "ROST", "SBAC", "SBUX", "SHLD", "SIAL", "SIRI", "SNDK", "SPLS", "SRCL", "STX", "SYMC",
-				"TSLA", "TXN", "VIAB", "VIP", "VOD", "VRSK", "VRTX", "WDC", "WFM", "WYNN", "XLNX", "XRAY", "YHOO"};
-		
-		int count=1;
-		for (String stock : symbols){
-			
-			stock_Id.put(stock, count);
-			id_Stock.put(count, stock);
-			count=count+1;
-		}
-		
-		Output output=new Output(id_Stock);
-		Manager manager=new Manager(output);
-		
-		System.out.println("Adding requests");
-		
-		for (String symbol : symbols){
-			for (String date : dates){
-				
-				manager.addRequest(symbol, date);
-				
-			}
-		}
-		
-		System.out.println("Requesting data");
-		manager.requestData();
-		output.flush();
+		List<String> range=dateRange(date1, date2);
+		System.out.println(range);
 	}
-
+	
 	
 	/**
 	 * This method takes as input two strings with startDate and endDate, and produces
@@ -109,6 +60,8 @@ public class Main {
 		
 		int [] hourValues={16, 14, 12, 10};
 		
+		System.out.println(roller.getTime());
+		System.out.println(end.getTime());
 		while (roller.getTime().before(end.getTime())){
 			StringBuilder sb=new StringBuilder("");
 			if (isDayOfWeek(roller)){
@@ -144,8 +97,11 @@ public class Main {
 					temp.append("EST");
 					toReturn.add(temp.toString());
 				}		
+				
 			}
 			roller.add(Calendar.HOUR, 24);
+			
+			System.out.println(roller.getTime());
 		}
 		return toReturn;
 	}
@@ -162,3 +118,5 @@ public class Main {
 		return false;
 	}	
 }
+
+
