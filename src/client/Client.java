@@ -26,7 +26,7 @@ public class Client implements EWrapper{
 	private int s_requestCounter;
 	private Map<Integer, Integer> requestMap=new HashMap<Integer, Integer>();
 
-    public Client(Output output, Manager manager){
+	public Client(Output output, Manager manager){
     	this.output=output;
     	this.manager=manager;
     }
@@ -395,11 +395,7 @@ public class Client implements EWrapper{
 			double high, double low, double close, int volume, int count,
 			double WAP, boolean hasGaps) {
 		
-		System.out.println("Request received"+Integer.toString(reqId));
-		manager.requestReceived(requestMap.get(reqId));
-		output.update(reqId, date, open, high, low, close, volume, count, WAP, hasGaps);
-		
-		
+		manager.requestReceived(requestMap.get(reqId), date, open, high, low, close, volume, count, WAP);
 	}
 
 	@Override

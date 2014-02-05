@@ -36,27 +36,28 @@ public class Manager {
 			try{
 				Thread.sleep(10001);
 				Tuple request=requests.popHead();
-				client.s_getHistoricalData(request_reqId.get(request), request.getSymbol(), request.getDate(), "7200 S", "5 secs", "TRADES");
+				if (request!=null){
+					client.s_getHistoricalData(request_reqId.get(request), request.getSymbol(), request.getDate(), "7200 S", "5 secs", "TRADES");
+				}
 			}
 			catch(InterruptedException ex){
 				
 			}
-			
-			
 		}
 		
 		output.flush();
 		client.s_disconnect();
 	}
 	
-	public void requestReceived(int requestId){
+	
+	public void requestReceived(int requestId, String date, double open, double high, double low, double close, int volume, int count, double WAP){
 		
 		//This is interesting here. I don't know how this would work with multithreading.
 		
 		if (reqId_Request.containsKey(requestId)){
 			Tuple request=reqId_Request.get(requestId);
+			output.update(request.getSymbol(), date, open, high, low, close, volume, count, WAP);
 			requests.remove(request);
-			System.out.println("I got here");
 		}
 	}
 	

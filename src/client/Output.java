@@ -31,11 +31,11 @@ public class Output {
 	 * @param WAP
 	 * @param hasGaps
 	 */
-	public void update(int reqId, String date, double open,
+	public void update(String stock, String date, double open,
 			double high, double low, double close, int volume, int count,
-			double WAP, boolean hasGaps){
+			double WAP){
 		
-		String stock=id_Stock.get(reqId);
+		
 		try{
 			long time=Long.parseLong(date);
 		

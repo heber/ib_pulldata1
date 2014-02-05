@@ -1,9 +1,13 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
+
 import client.Client;
 import client.Manager;
 import client.Output;
@@ -16,75 +20,29 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
+		if (args.length!=2){
+			System.out.println("Usage: ib_pulldata.jar <startDate> <endDate>");
+			return;
+		}
+		
+		String startDate=args[0];
+		String endDate=args[1];
+		
+		System.out.println("Generating date range");
+		
+		List<String> dates=dateRange(startDate, endDate);
+		
 		Map<String, Integer> stock_Id=new HashMap<String, Integer>();
 		Map<Integer, String> id_Stock=new HashMap<Integer, String>();
 		
-		List<String> symbols;
-		List<String> dates;
-		
-		if (args.length>0){
-			symbols=readSymbols(args[0]);
-		}
-		else {
-			symbols=new ArrayList<String>();
-			symbols.add("AAPL");
-			symbols.add("MU");
-		}
-		
-		if (args.length>1){
-			dates=readDates(args[1]);
-		}
-		else{
-			dates=new ArrayList<String>();
-			dates.add("20140124 10:30:00 EST");	
-		}
 		
 		int clientId=5;
-		//These symbols are the Nasdaq 100 companies
-		/*
 		String [] symbols={"AAPL", "ADBE", "ADI", "ADP", "ADSK", "AKAM", "ALTR", "ALXN", "AMAT", "AMGN", "AMZN", "ATVI", "AVGO", "BBBY", "BIDU", 
 				"BIIB", "BRCM", "CA", "CELG", "CERN", "CHKP", "CHRW", "CHTR", "CMCSA", "COST", "CSCO", "CTRX", "CTSH", "CTXS", "DISCA", "DLTR", "DTV", "EBAY",
 				"EQIX", "ESRX", "EXPD", "EXPE", "FAST", "FB", "FFIV", "FISV", "FOSL", "FOXA", "GILD", "GMCR", "GOOG", "GRMN", "HSIC", "INTC", "INTU", "ISRG", 
 				"KLAC", "KRFT", "LBTYA", "LINTA", "LLTC", "LMCA", "MAR", "MAT", "MCHP", "MDLZ", "MNST", "MSFT", "MU", "MXIM", "MYL", "NFLX", "NTAP", "NUAN",
 				"NVDA", "ORLY", "PAYX", "PCAR", "PCLN", "QCOM", "REGN", "ROST", "SBAC", "SBUX", "SHLD", "SIAL", "SIRI", "SNDK", "SPLS", "SRCL", "STX", "SYMC",
 				"TSLA", "TXN", "VIAB", "VIP", "VOD", "VRSK", "VRTX", "WDC", "WFM", "WYNN", "XLNX", "XRAY", "YHOO"};
-		*/
-		
-		
-		
-		
-		//Dates from where I will extract the info.
-		/*
-		String [] dates={
-				
-				"20130930 16:00:00 EST", "20130930 14:00:00 EST", "20130930 12:00:00 EST", "20130930 10:00:00 EST",
-				"20130927 16:00:00 EST", "20130927 14:00:00 EST", "20130927 12:00:00 EST", "20130927 10:00:00 EST",
-				"20130926 16:00:00 EST", "20130926 14:00:00 EST", "20130926 12:00:00 EST", "20130926 10:00:00 EST",
-				"20130925 16:00:00 EST", "20130925 14:00:00 EST", "20130925 12:00:00 EST", "20130925 10:00:00 EST",
-				"20130924 16:00:00 EST", "20130924 14:00:00 EST", "20130924 12:00:00 EST", "20130924 10:00:00 EST",
-				"20130923 16:00:00 EST", "20130923 14:00:00 EST", "20130923 12:00:00 EST", "20130923 10:00:00 EST",
-				"20130920 16:00:00 EST", "20130920 14:00:00 EST", "20130920 12:00:00 EST", "20130920 10:00:00 EST",
-				"20130919 16:00:00 EST", "20130919 14:00:00 EST", "20130919 12:00:00 EST", "20130919 10:00:00 EST",
-				"20130918 16:00:00 EST", "20130918 14:00:00 EST", "20130918 12:00:00 EST", "20130918 10:00:00 EST",
-				"20130917 16:00:00 EST", "20130917 14:00:00 EST", "20130917 12:00:00 EST", "20130917 10:00:00 EST",
-				"20130916 16:00:00 EST", "20130916 14:00:00 EST", "20130916 12:00:00 EST", "20130916 10:00:00 EST",
-				"20130913 16:00:00 EST", "20130913 14:00:00 EST", "20130913 12:00:00 EST", "20130913 10:00:00 EST",
-				"20130912 16:00:00 EST", "20130912 14:00:00 EST", "20130912 12:00:00 EST", "20130912 10:00:00 EST",
-				"20130911 16:00:00 EST", "20130911 14:00:00 EST", "20130911 12:00:00 EST", "20130911 10:00:00 EST",
-				"20130910 16:00:00 EST", "20130910 14:00:00 EST", "20130910 12:00:00 EST", "20130910 10:00:00 EST",
-				"20130909 16:00:00 EST", "20130909 14:00:00 EST", "20130909 12:00:00 EST", "20130909 10:00:00 EST",
-				"20130906 16:00:00 EST", "20130906 14:00:00 EST", "20130906 12:00:00 EST", "20130906 10:00:00 EST",
-				"20130905 16:00:00 EST", "20130905 14:00:00 EST", "20130905 12:00:00 EST", "20130905 10:00:00 EST",
-				"20130904 16:00:00 EST", "20130904 14:00:00 EST", "20130904 12:00:00 EST", "20130904 10:00:00 EST",
-				"20130903 16:00:00 EST", "20130903 14:00:00 EST", "20130903 12:00:00 EST", "20130903 10:00:00 EST",
-				"20130902 16:00:00 EST", "20130902 14:00:00 EST", "20130902 12:00:00 EST", "20130902 10:00:00 EST"
-				
-								
-		};
-		 */
-		
-		
-		
 		
 		int count=1;
 		for (String stock : symbols){
@@ -96,7 +54,9 @@ public class Main {
 		
 		Output output=new Output(id_Stock);
 		Manager manager=new Manager(output);
-				
+		
+		System.out.println("Adding requests");
+		
 		for (String symbol : symbols){
 			for (String date : dates){
 				
@@ -105,16 +65,100 @@ public class Main {
 			}
 		}
 		
+		System.out.println("Requesting data");
 		manager.requestData();
 		output.flush();
 	}
 
-	private static List<String> readSymbols(String filePath){
-		return null;
+	
+	/**
+	 * This method takes as input two strings with startDate and endDate, and produces
+	 * a list of strings with all the date ranges in between, using the special
+	 * form that Interactive Brokers API takes as input.
+	 * 
+	 * The form of the startDate and endDate is "mm/dd/yyyy"
+	 * The form of the strings in the return list is "yyyymmdd hh:mm:ss TZ"
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	private static List<String> dateRange(String startDate, String endDate){
+		List<String> toReturn=new ArrayList<String>();
+		
+		String [] sdTokens=startDate.split("/");
+		String [] edTokens=endDate.split("/");
+		
+		int sdMonth=Integer.parseInt(sdTokens[0])-1;
+		int sdDay=Integer.parseInt(sdTokens[1]);
+		int sdYear=Integer.parseInt(sdTokens[2]);
+		
+		int edMonth=Integer.parseInt(edTokens[0])-1;
+		int edDay=Integer.parseInt(edTokens[1]);
+		int edYear=Integer.parseInt(edTokens[2]);
+		
+		Calendar roller=GregorianCalendar.getInstance();
+		TimeZone zn=TimeZone.getTimeZone("EST");
+		roller.setTimeZone(zn);
+		roller.set(sdYear, sdMonth, sdDay, 11, 30, 0);
+		
+		Calendar end=GregorianCalendar.getInstance();
+		end.setTimeZone(zn);
+		end.set(edYear, edMonth, edDay, 16, 0, 0);
+		
+		if (end.getTime().before(roller.getTime())) return toReturn;
+		
+		int [] hourValues={16, 14, 12, 10};
+		
+		while (roller.getTime().before(end.getTime())){
+			StringBuilder sb=new StringBuilder("");
+			if (isDayOfWeek(roller)){
+				
+				//1. append year
+				sb.append(Integer.toString(roller.get(Calendar.YEAR)));
+				
+				//2. append month
+				int month=roller.get(Calendar.MONTH)+1;
+				if (month<=9){
+					sb.append(Integer.toString(0));
+				}
+				sb.append(Integer.toString(month));
+				
+				//3. append day
+				int day=roller.get(Calendar.DAY_OF_MONTH);
+				if (day<=9){
+					sb.append(Integer.toString(0));
+				}
+				sb.append(Integer.toString(day));
+				
+				//4. append hours
+				sb.append(" ");
+				for (int i=0; i<hourValues.length; ++i){
+					int hour=hourValues[i];
+					StringBuilder temp=new StringBuilder(sb.toString());
+					if (hour<=9){
+						temp.append(Integer.toString(0));
+					}
+					temp.append(Integer.toString(hour)).append(":00:00 ");
+					
+					//4.1. append time zone
+					temp.append("EST");
+					toReturn.add(temp.toString());
+				}		
+			}
+			roller.roll(Calendar.DATE, true);
+		}
+		return toReturn;
 	}
 	
-	private static List<String> readDates(String filePath){
-		return null;
-	}
-	
+	private static boolean isDayOfWeek(Calendar cal){
+		if (cal!=null){
+			int day=cal.get(Calendar.DAY_OF_WEEK);
+			if (day==Calendar.MONDAY || day==Calendar.TUESDAY || day==Calendar.WEDNESDAY ||
+					day==Calendar.THURSDAY || day==Calendar.FRIDAY){
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}	
 }
