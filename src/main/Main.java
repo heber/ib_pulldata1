@@ -57,11 +57,9 @@ public class Main {
 		
 		System.out.println("Adding requests");
 		
-		for (String symbol : symbols){
-			for (String date : dates){
-				
+		for (String date : dates){
+			for (String symbol : symbols){
 				manager.addRequest(symbol, date);
-				
 			}
 		}
 		
