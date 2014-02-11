@@ -14,11 +14,22 @@ public class Test {
 	 */
 	public static void main(String[] args) {
 		
-		String date1="01/01/2014";
-		String date2="02/04/2014";
+		Calendar start=new GregorianCalendar();
+		start.set(Calendar.YEAR, 2014);
+		start.set(Calendar.MONTH, 0);
+		start.set(Calendar.DAY_OF_MONTH, 1);
+		//January 2, 2014
 		
-		List<String> range=dateRange(date1, date2);
-		System.out.println(range);
+		Calendar end=new GregorianCalendar();
+		end.set(Calendar.YEAR, 2014);
+		end.set(Calendar.MONTH, 1);
+		end.set(Calendar.DAY_OF_MONTH, 2);
+		//February 2, 2014
+		
+		while (start.getTime().before(end.getTime())){
+			start.roll(Calendar.DATE, 1);
+		}
+	
 	}
 	
 	
