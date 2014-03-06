@@ -1,5 +1,11 @@
 package main;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -7,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import client.Client;
 import client.Manager;
@@ -21,12 +29,13 @@ public class Main {
 	public static void main(String[] args) {
 		
 		if (args.length!=2){
-			System.out.println("Usage: ib_pulldata.jar <startDate> <endDate>");
+			System.out.println("Usage: ib_pulldata.jar <startDate> <endDate> <symbolsFile>");
 			return;
 		}
 		
 		String startDate=args[0];
 		String endDate=args[1];
+		String symbolsFilePath=args[2];
 		
 		System.out.println("Generating date range");
 		
@@ -36,13 +45,7 @@ public class Main {
 		Map<Integer, String> id_Stock=new HashMap<Integer, String>();
 		
 		
-		int clientId=5;
-		String [] symbols={"AAPL", "ADBE", "ADI", "ADP", "ADSK", "AKAM", "ALTR", "ALXN", "AMAT", "AMGN", "AMZN", "ATVI", "AVGO", "BBBY", "BIDU", 
-				"BIIB", "BRCM", "CA", "CELG", "CERN", "CHKP", "CHRW", "CHTR", "CMCSA", "COST", "CSCO", "CTRX", "CTSH", "CTXS", "DISCA", "DLTR", "DTV", "EBAY",
-				"EQIX", "ESRX", "EXPD", "EXPE", "FAST", "FB", "FFIV", "FISV", "FOSL", "FOXA", "GILD", "GMCR", "GOOG", "GRMN", "HSIC", "INTC", "INTU", "ISRG", 
-				"KLAC", "KRFT", "LBTYA", "LINTA", "LLTC", "LMCA", "MAR", "MAT", "MCHP", "MDLZ", "MNST", "MSFT", "MU", "MXIM", "MYL", "NFLX", "NTAP", "NUAN",
-				"NVDA", "ORLY", "PAYX", "PCAR", "PCLN", "QCOM", "REGN", "ROST", "SBAC", "SBUX", "SHLD", "SIAL", "SIRI", "SNDK", "SPLS", "SRCL", "STX", "SYMC",
-				"TSLA", "TXN", "VIAB", "VIP", "VOD", "VRSK", "VRTX", "WDC", "WFM", "WYNN", "XLNX", "XRAY", "YHOO"};
+		List<String> symbols=getSymbols(symbolsFilePath);
 		
 		int count=1;
 		for (String stock : symbols){
@@ -158,5 +161,60 @@ public class Main {
 			return false;
 		}
 		return false;
-	}	
+	}
+	
+	private static List<String> getSymbols(String symbolsPath){
+		List<String> symbols=new ArrayList<String>();
+		
+		Pattern p=Pattern.compile("[A-Z]+");
+		
+		BufferedReader br=null;
+		try {
+			br=openFile(symbolsPath);
+		} catch (FileNotFoundException e) {
+			System.out.println("File of symbols not found");
+		}
+		
+		//2. Process file
+		String strLine=null;
+		try {
+			while ((strLine = br.readLine())!=null){
+				Matcher m=p.matcher(strLine);
+								
+				while (m.find() ){
+					String symbol=(m.group(0));
+					symbol=symbol.trim();
+					symbols.add(symbol);
+				}
+				
+			}
+		}
+		catch (IOException e) {
+			System.out.println(strLine);
+			return symbols;
+		}
+	
+		//3. Close file
+		closeFile(br);	
+		return symbols;
+
+	}
+			
+	private static BufferedReader openFile(String filePath) throws FileNotFoundException{
+		FileInputStream fstream=new FileInputStream(filePath);
+		DataInputStream in=new DataInputStream(fstream);
+		BufferedReader br=new BufferedReader(new InputStreamReader(in));
+		
+		return br;
+	}
+	
+	private static void closeFile(BufferedReader br){
+		try {
+			br.close();
+		} catch (IOException e) {
+			//Do nothing.  THis is intended here.
+		}
+	}
+
+
 }
