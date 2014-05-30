@@ -28,14 +28,15 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
-		if (args.length!=3){
-			System.out.println("Usage: ib_pulldata.jar <startDate> <endDate> <symbolsFile>");
+		if (args.length!=4){
+			System.out.println("Usage: ib_pulldata.jar <startDate> <endDate> <symbolsFile> <port>");
 			return;
 		}
 		
 		String startDate=args[0];
 		String endDate=args[1];
 		String symbolsFilePath=args[2];
+		int port=Integer.parseInt(args[3]);
 		
 		System.out.println("Generating date range");
 		
@@ -67,7 +68,7 @@ public class Main {
 		}
 		
 		System.out.println("Requesting data");
-		manager.requestData();
+		manager.requestData(port);
 		output.flush();
 	}
 

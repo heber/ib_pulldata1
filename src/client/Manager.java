@@ -28,9 +28,9 @@ public class Manager {
 		requests.add(request);
 	}
 	
-	public void requestData(){
+	public void requestData(int port){
 		
-		client.s_connect("", 4002, 5);
+		client.s_connect("", port, 5);
 		
 		while (!requests.isEmpty()){
 			try{
